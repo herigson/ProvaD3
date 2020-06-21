@@ -13,8 +13,9 @@ class Questao02
 {
     static void Main()
     {
-        Banco b1 = new Banco();
-        b1.IncluirAgencias();
+        Agencia a1 = new Agencia();
+
+        a1.CadastroClientes();
     }
 }
 struct Cliente
@@ -81,6 +82,16 @@ struct Agencia
     public Cliente[] Clientes;
     public int ClientesCadastrados;
 
+    public Agencia(string codigo, string endereco, ContaCorrente contac, ContaPoupança contap, Cliente[] cliente, int clientesCadastrados)
+    {
+        this.Codigo = codigo;
+        this.Endereço = endereco;
+        this.ContaCorrente = contac;
+        this.ContaPoupança = contap;
+        this.Clientes = cliente;
+        this.ClientesCadastrados = clientesCadastrados;
+    }
+
     public void CadastroAgencias()
     {
         Console.WriteLine("Informe o o código da agência: ");
@@ -90,7 +101,7 @@ struct Agencia
 
     }
 
-    public void CadastroCliente()
+    public void CadastroClientes()
     {
         int numClientes;
         int opcao;
@@ -99,24 +110,27 @@ struct Agencia
             Console.WriteLine("Deseja incluir quantos clientes? ");
             numClientes = int.Parse(Console.ReadLine());
 
-            if (numClientes > 5)
-                Console.WriteLine("Você pode cadastrar no máximo 3 clientes agências!");
+            if (numClientes > 3)
+                Console.WriteLine("Você pode cadastrar no máximo 3 clientes nesta agência!");
 
-        } while (numClientes < 1 && numClientes > 3);
+        } while ((numClientes < 1) || (numClientes > 3));
 
+        Clientes = new Cliente[numClientes];
         this.ClientesCadastrados = numClientes;
 
         for (int i = 0; i < this.Clientes.Length; i++)
         {
-            Clientes[i].CadastroCliente();
+            Console.WriteLine("Cadastro Do {0}º Cliente",i+1);
+            this.Clientes[i].CadastroCliente();
             Console.Write("Deseja criar uma conta corrente para este cliente? 1 - Sim... 2 - Não... : ");
             opcao = int.Parse(Console.ReadLine());
-            if(opcao == 1)
+            if (opcao == 1)
                 this.ContaCorrente.CadastroContaCorrente(Clientes[i]);
             Console.Write("Deseja criar uma conta poupança para este cliente?1 - Sim... 2 - Não... : ");
             opcao = int.Parse(Console.ReadLine());
             if (opcao == 1)
                 this.ContaPoupança.CadastroContaPoupança(Clientes[i]);
+            Console.Clear();
         }
     }
 
@@ -157,14 +171,14 @@ struct Banco
 
         for (int i = 0; i < this.Agencias.Length; i++)
         {
-            Console.WriteLine("Cadastro Da {0}ª Agência ", i+1);
+            Console.WriteLine("Cadastro Da {0}ª Agência ", i + 1);
             Agencias[i].CadastroAgencias();
             Console.Clear();
         }
     }
     public void ExcluirAgencias()
     {
-       
+
     }
 }
 
