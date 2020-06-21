@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.WebSockets;
 /*2) Escreva o algoritmo de controle das contas de um banco. Considere que o banco possui
 nome, um código e apenas 5 agências. Considere também que cada agência possui um
 código, endereço, telefone e apenas 3 clientes. Ao abrirem conta em uma das agências do
@@ -16,8 +17,10 @@ class Questao02
         Agencia a1 = new Agencia();
 
         a1.CadastroClientes();
+        a1.ImprimirDadosAgencia();
     }
 }
+
 struct Cliente
 {
     public string Cpf;
@@ -132,6 +135,13 @@ struct Agencia
                 this.ContaPoupança.CadastroContaPoupança(Clientes[i]);
             Console.Clear();
         }
+    }
+
+    public void ImprimirDadosAgencia()
+    {
+        Console.WriteLine("Código Da Agência: {0}",this.Codigo);
+        Console.WriteLine("Endereço Da Agência: {0}", this.Endereço);
+        Console.WriteLine("Total de Clientes: {0}", this.ClientesCadastrados);
     }
 
 }
