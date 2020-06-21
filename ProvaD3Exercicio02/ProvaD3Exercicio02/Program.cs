@@ -82,8 +82,9 @@ struct Agencia
     public ContaPoupança ContaPoupança;
     public Cliente[] Clientes;
     public int ClientesCadastrados;
+    public int TagAtivo;
 
-    public Agencia(string codigo, string endereco, ContaCorrente contac, ContaPoupança contap, Cliente[] cliente, int clientesCadastrados)
+    public Agencia(string codigo, string endereco, ContaCorrente contac, ContaPoupança contap, Cliente[] cliente, int clientesCadastrados, int tagAtivo)
     {
         this.Codigo = codigo;
         this.Endereço = endereco;
@@ -91,14 +92,16 @@ struct Agencia
         this.ContaPoupança = contap;
         this.Clientes = cliente;
         this.ClientesCadastrados = clientesCadastrados;
+        this.TagAtivo = tagAtivo;
     }
 
     public void CadastroAgencias()
     {
-        Console.WriteLine("Informe o o código da agência: ");
+        Console.Write("Informe o o código da agência: ");
         this.Codigo = Console.ReadLine();
-        Console.WriteLine("Informe o endereço da agencia: ");
+        Console.Write("Informe o endereço da agencia: ");
         this.Endereço = Console.ReadLine();
+        this.TagAtivo = 1;
 
     }
 
@@ -167,36 +170,46 @@ struct Banco
         do
         {
             Console.WriteLine("Deseja incluir quantas agências? ");
-            numAgencias = int.Parse(Console.ReadLine());
+            this.NumAagenciasCadastradas = int.Parse(Console.ReadLine());
+            numAgencias = this.NumAagenciasCadastradas;
 
-            if (numAgencias > 5)
+            if (this.NumAagenciasCadastradas > 5)
                 Console.WriteLine("Você pode cadastrar no máximo 5 agências!");
 
-        } while (numAgencias < 1 && numAgencias > 5);
+        } while (this.NumAagenciasCadastradas < 1 && this.NumAagenciasCadastradas > 5);
 
-        this.NumAagenciasCadastradas = numAgencias;
-        this.Agencias = new Agencia[numAgencias];
+        this.Agencias = new Agencia[5];
 
-        for (int i = 0; i < this.Agencias.Length; i++)
+        for (int i = 0; i < numAgencias; i++)
         {
             Console.WriteLine("Cadastro Da {0}ª Agência ", i + 1);
             Agencias[i].CadastroAgencias();
             Console.Clear();
         }
     }
-    public void ExcluirAgencias()
+    public void ExcluirAgencias(int indice)
     {
+        if (indice < this.NumAagenciasCadastradas)
+        {
+            Agencia aux;
+            aux = this.Agencias[indice];
+            this.Agencias[indice] = this.Agencias[NumAagenciasCadastradas];
+            this.Agencias[this.NumAagenciasCadastradas] = aux;
+            this.Agencias[this.NumAagenciasCadastradas].TagAtivo = 0;
+            this.NumAagenciasCadastradas--;
 
+        }
     }
 
     public void Program()
     {
-        int opcao;
+        int opcao, indiceAgencia;
+        string codigoAgencia;
 
         Console.WriteLine("Bem vindo ao programa de administração do seu banco!");
         Console.Write("Informe o nome do banco: ");
         this.Nome = Console.ReadLine();
-        Console.WriteLine("Informe o código do banco:");
+        Console.Write("Informe o código do banco: ");
         this.Codigo = Console.ReadLine();
         Console.Clear();
 
@@ -204,8 +217,9 @@ struct Banco
         {
             Console.WriteLine("Administração Banco {0}", this.Nome);
             Console.WriteLine("0 - Encerrar o programa de administração");
-            Console.WriteLine("1 - Incluir agências");
-            Console.WriteLine("2 - Cadastrar clientes");
+            Console.WriteLine("1 - Incluir Agências");
+            Console.WriteLine("2 - Excluir Agências");
+            Console.WriteLine("3 - Cadastrar Clientes");
             Console.Write("Informe a opção desejada :");
             opcao = int.Parse(Console.ReadLine());
 
@@ -218,14 +232,21 @@ struct Banco
                     break;
                 case 2:
                     Console.Clear();
-                    string codigoAgencia;
-                    int indice;
-                    Console.Clear();
                     ImprimirDadosTodasAgencias();
-                    Console.Write("\n\nVocê deseja cadastrar em qual clientes para qual agência? Informe o código: ");
+                    Console.WriteLine("Informe o código da agência que deseja excluir?");
                     codigoAgencia = Console.ReadLine();
-                    indice = RetornaIndiceAgencia(this.Agencias, codigoAgencia);
-                    this.Agencias[indice].CadastroClientes();
+                    indiceAgencia = RetornaIndiceAgencia(this.Agencias, codigoAgencia);
+                    ExcluirAgencias(indiceAgencia);
+                    break;
+                case 3:
+                    Console.Clear();
+                    
+                    
+                    ImprimirDadosTodasAgencias();
+                    Console.Write("\n\nInforme o código da agência no qual você irá cadastrar um cliente: ");
+                    codigoAgencia = Console.ReadLine();
+                    indiceAgencia = RetornaIndiceAgencia(this.Agencias, codigoAgencia);
+                    this.Agencias[indiceAgencia].CadastroClientes();
                     break;
             }
         } while (opcao != 0);
@@ -236,7 +257,7 @@ struct Banco
     public void ImprimirDadosTodasAgencias()
     {
         Console.WriteLine("Agencias Cadastradas");
-        for (int i = 0; i < this.Agencias.Length; i++)
+        for (int i = 0; i < this.NumAagenciasCadastradas; i++)
         {
             this.Agencias[i].ImprimirDadosAgencia();
             Console.WriteLine();
