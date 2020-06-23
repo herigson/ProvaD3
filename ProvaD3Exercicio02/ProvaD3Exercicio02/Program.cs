@@ -17,12 +17,8 @@ struct Cliente
     public string DataDeNascimento;
     public int ContContaC;
     public int ContContaP;
-
-
     public void CadastroCliente()
     {
-
-
         Console.Write("Informe o CPF do cliente: ");
         this.Cpf = Console.ReadLine();
         Console.Write("Informe o nome completo do cliente: ");
@@ -31,7 +27,6 @@ struct Cliente
         this.Telefone = Console.ReadLine();
         Console.Write("Informe a data de nascimento do cliente: ");
         this.DataDeNascimento = Console.ReadLine();
-
     }
 
 }
@@ -572,24 +567,23 @@ struct Banco
                 case 19:
                     indiceAgencia = RetornaIndiceAgencia();
                     indiceConta = this.Agencias[indiceAgencia].RetornaIndiceContaCorrente();
-                    Console.WriteLine("Saldo da conta: {0}", this.Agencias[indiceAgencia].ContaCorrentes[indiceConta].Saldo);
+                    Console.WriteLine("Saldo da conta: {0:F2}", this.Agencias[indiceAgencia].ContaCorrentes[indiceConta].Saldo);
                     PauseClean();
                     break;
                 case 20:
                     indiceAgencia = RetornaIndiceAgencia();
                     indiceConta = this.Agencias[indiceAgencia].RetornaIndiceContaPoupanca();
-                    Console.WriteLine("Saldo da conta: {0}", this.Agencias[indiceAgencia].ContaPoupancas[indiceConta].Saldo);
+                    Console.WriteLine("Saldo da conta: {0:F2}", this.Agencias[indiceAgencia].ContaPoupancas[indiceConta].Saldo);
                     PauseClean();
                     break;
                 case 21:
                     indiceAgencia = RetornaIndiceAgencia();
                     indiceConta = this.Agencias[indiceAgencia].RetornaIndiceContaCorrente();
-                    Console.WriteLine("Crédito da conta: {0}", this.Agencias[indiceAgencia].ContaCorrentes[indiceConta].Credito);
+                    Console.WriteLine("Crédito da conta: {0:F2}", this.Agencias[indiceAgencia].ContaCorrentes[indiceConta].Credito);
                     PauseClean();
                     break;
             }
         } while (opcao != 0);
-
 
     }
     public void IncluirAgencias()
