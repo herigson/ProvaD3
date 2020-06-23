@@ -28,6 +28,13 @@ struct Cliente
         Console.Write("Informe a data de nascimento do cliente: ");
         this.DataDeNascimento = Console.ReadLine();
     }
+    public bool VerificaContaAtiva()
+    {
+        bool ativo = false;
+        if (this.ContContaC == 00 && this.ContContaP == 00)
+            ativo = true;
+        return ativo;
+    }
 
 }
 struct ContaCorrente
@@ -242,8 +249,12 @@ struct Agencia
             aux = this.ContaCorrentes[indice];
             this.ContaCorrentes[indice] = this.ContaCorrentes[this.ContasCorrentesCadastradas];
             this.ContaCorrentes[this.ContasCorrentesCadastradas] = aux;
+            this.ContaCorrentes[this.ContasCorrentesCadastradas].Cliente.ContContaC--;
             this.ContasCorrentesCadastradas--;
+            if (this.ContaCorrentes[this.ContasCorrentesCadastradas].Cliente.VerificaContaAtiva() == true)
+                this.ClientesCadastrados--;
         }
+        
     }
     public void ExcluirContaPoupança(int indice)
     {
@@ -253,7 +264,10 @@ struct Agencia
             aux = this.ContaPoupancas[indice];
             this.ContaPoupancas[indice] = this.ContaPoupancas[this.ContasPoupancaCadastradas];
             this.ContaPoupancas[this.ContasPoupancaCadastradas] = aux;
+            this.ContaPoupancas[this.ContasPoupancaCadastradas].Cliente.ContContaP--;
             this.ContasPoupancaCadastradas--;
+            if (this.ContaPoupancas[this.ContasPoupancaCadastradas].Cliente.VerificaContaAtiva() == true)
+                this.ClientesCadastrados--;
         }
     }
     public void SaqueContaPoupanca()
@@ -505,10 +519,7 @@ struct Banco
                             {
                                 indiceConta = this.Agencias[indiceAgencia].RetornaIndiceContaCorrente();
                                 if (indiceConta >= 0)
-                                {
                                     this.Agencias[indiceAgencia].ExcluirContaCorrente(indiceConta);
-                                    this.Agencias[indiceAgencia].ContaCorrentes[indiceConta].Cliente.ContContaC--;
-                                }
                             }
                             break;
                         case 2:
@@ -519,10 +530,7 @@ struct Banco
                             {
                                 indiceConta = this.Agencias[indiceAgencia].RetornaIndiceContaPoupanca();
                                 if (indiceConta >= 0)
-                                {
                                     this.Agencias[indiceAgencia].ExcluirContaPoupança(indiceConta);
-                                    this.Agencias[indiceAgencia].ContaPoupancas[indiceConta].Cliente.ContContaP--;
-                                }
                             }
                             break;
                     }
