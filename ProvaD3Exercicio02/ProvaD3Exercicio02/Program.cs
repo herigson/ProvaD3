@@ -621,10 +621,13 @@ struct Banco
                 this.Agencias[this.NumAagenciasCadastradas] = aux;
                 this.Agencias[this.NumAagenciasCadastradas].TagAtivo = 0;
                 this.NumAagenciasCadastradas--;
+                Console.WriteLine("Agência excluida com suceso!");
+                PauseClean();
             }
             else
             {
                 Console.WriteLine("Esta agencia não pode ser excluída pois tem clientes cadastrados.");
+                PauseClean();
             }
         }
         else
