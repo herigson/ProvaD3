@@ -254,7 +254,7 @@ struct Agencia
             if (this.ContaCorrentes[this.ContasCorrentesCadastradas].Cliente.VerificaContaAtiva() == true)
                 this.ClientesCadastrados--;
         }
-        
+
     }
     public void ExcluirContaPoupança(int indice)
     {
@@ -332,44 +332,46 @@ struct Agencia
     }
     public void TransferenciaCorrenteParaPoupanca()
     {
-        int indiceConta, opcao;
+        int indiceContaC, indiceContaP, opcao;
         double quantia, valorDesconto;
         Console.WriteLine("Transferência de Conta Corrente para Conta Poupança");
         Console.WriteLine("Inserindo dados da conta corrente... ");
-        indiceConta = RetornaIndiceContaCorrente();
-        if (indiceConta >= 0)
+        indiceContaC = RetornaIndiceContaCorrente();
+        if (indiceContaC >= 0)
         {
-            Console.WriteLine("Saldo Atual: ", this.ContaCorrentes[indiceConta].Saldo);
+            Console.WriteLine("Saldo Atual: ", this.ContaCorrentes[indiceContaC].Saldo);
             Console.WriteLine("Informe a quantia a ser transferência: ");
             quantia = double.Parse(Console.ReadLine());
-            valorDesconto = (-this.ContaCorrentes[indiceConta].Saldo + quantia) * 1.08;
-            if (quantia < this.ContaCorrentes[indiceConta].Saldo)
+            valorDesconto = (-this.ContaCorrentes[indiceContaC].Saldo + quantia) * 1.08;
+            Console.WriteLine("Inserindo os dados da conta poupança... ");
+            indiceContaP = RetornaIndiceContaPoupanca();
+            if (indiceContaP >= 0)
             {
-                Console.WriteLine("Inserindo os dados da conta poupança... ");
-                indiceConta = RetornaIndiceContaPoupanca();
-                if (indiceConta >= 0)
+                if (quantia < this.ContaCorrentes[indiceContaC].Saldo)
                 {
-                    this.ContaPoupancas[indiceConta].Saldo += quantia;
+                    this.ContaCorrentes[indiceContaC].Saldo -= quantia;
+                    this.ContaPoupancas[indiceContaP].Saldo += quantia;
                     Console.WriteLine("Transferência realizada com sucesso!");
                 }
-            }
-            else if (quantia < (this.ContaCorrentes[indiceConta].Saldo + this.ContaCorrentes[indiceConta].Credito))
-            {
-                Console.WriteLine("Você não possui saldo suficiente mas pode usar seu crédito");
-                Console.WriteLine("Será descontado {0:F2} do seu crédito, deseja continuar?", valorDesconto);
-                Console.Write("1 - Sim | 2 - Não...: ");
-                opcao = int.Parse(Console.ReadLine());
-                if (opcao == 1)
+                else if (quantia < (this.ContaCorrentes[indiceContaC].Saldo + this.ContaCorrentes[indiceContaC].Credito))
                 {
-                    this.ContaCorrentes[indiceConta].Credito -= ((-this.ContaCorrentes[indiceConta].Saldo + quantia) * 1.08);
-                    this.ContaCorrentes[indiceConta].Saldo = 0;
-                    Console.WriteLine("Saque efetuado com sucesso!");
+                    Console.WriteLine("Você não possui saldo suficiente mas pode usar seu crédito");
+                    Console.WriteLine("Será descontado {0:F2} do seu crédito, deseja continuar?", valorDesconto);
+                    Console.Write("1 - Sim | 2 - Não...: ");
+                    opcao = int.Parse(Console.ReadLine());
+                    if (opcao == 1)
+                    {
+                        this.ContaCorrentes[indiceContaC].Credito -= ((-this.ContaCorrentes[indiceContaC].Saldo + quantia) * 1.08);
+                        this.ContaCorrentes[indiceContaC].Saldo = 0;
+                        this.ContaPoupancas[indiceContaP].Saldo += quantia;
+                        Console.WriteLine("Transferencia efetuada com sucesso!");
+                    }
+                    else
+                        Console.WriteLine("Operação Cancelada");
                 }
-                else
-                    Console.WriteLine("Operação Cancelada");
             }
-            Banco.PauseClean();
         }
+        Banco.PauseClean();
     }
     public void TransferenciaPoupancaParaCorrente()
     {
@@ -389,10 +391,10 @@ struct Agencia
                 indiceContaP = RetornaIndiceContaCorrente();
                 if (indiceContaP >= 0)
                 {
-                    if(this.ContaCorrentes[indiceContaP].Credito < 1000)
+                    if (this.ContaCorrentes[indiceContaP].Credito < 1000)
                     {
                         double dpcredito = 1000 - this.ContaCorrentes[indiceContaP].Credito;
-                        if(quantia > dpcredito)
+                        if (quantia > dpcredito)
                         {
                             this.ContaCorrentes[indiceContaP].Credito -= dpcredito;
                             this.ContaPoupancas[indiceContaC].Saldo -= quantia;
@@ -406,10 +408,10 @@ struct Agencia
                             Console.WriteLine("Valor a ser transferido é menor ou igual ao valor do crédito utilizado pelo cliente");
                             this.ContaPoupancas[indiceContaC].Saldo -= quantia;
                             this.ContaCorrentes[indiceContaP].Credito += quantia;
-                            Console.WriteLine("Valor transferido para o crédito {0:f2}",quantia);
+                            Console.WriteLine("Valor transferido para o crédito {0:f2}", quantia);
 
                         }
-                        
+
                     }
                     this.ContaPoupancas[indiceContaC].Saldo -= quantia;
                     this.ContaCorrentes[indiceContaP].Saldo += quantia;
