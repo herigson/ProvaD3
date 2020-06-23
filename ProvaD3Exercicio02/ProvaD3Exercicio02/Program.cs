@@ -484,6 +484,7 @@ struct Banco
                             indiceAgencia = RetornaIndiceAgencia();
                             indiceConta = this.Agencias[indiceAgencia].RetornaIndiceContaCorrente();
                             this.Agencias[indiceAgencia].ExcluirContaCorrente(indiceConta);
+                            this.Agencias[indiceAgencia].ContaCorrentes[indiceConta].Cliente.ContContaC--;                        
                             break;
                         case 2:
                             Console.Clear();
@@ -491,6 +492,7 @@ struct Banco
                             indiceAgencia = RetornaIndiceAgencia();
                             indiceConta = this.Agencias[indiceAgencia].RetornaIndiceContaPoupanca();
                             this.Agencias[indiceAgencia].ExcluirContaPoupança(indiceConta);
+                            this.Agencias[indiceAgencia].ContaPoupancas[indiceConta].Cliente.ContContaP--;
                             break;
                     }
                     break;
@@ -675,5 +677,3 @@ struct Banco
         Console.Clear();
     }
 }
-
-
