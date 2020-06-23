@@ -373,23 +373,46 @@ struct Agencia
     }
     public void TransferenciaPoupancaParaCorrente()
     {
-        int indiceConta;
+        int indiceContaC, indiceContaP;
         double quantia;
         Console.WriteLine("Transferência de Conta Poupança para Conta Corrente");
         Console.WriteLine("Inserindo dados da conta poupança... ");
-        indiceConta = RetornaIndiceContaPoupanca();
-        if (indiceConta >= 0)
+        indiceContaC = RetornaIndiceContaPoupanca();
+        if (indiceContaC >= 0)
         {
-            Console.WriteLine("Saldo Atual: ", this.ContaPoupancas[indiceConta].Saldo);
+            Console.WriteLine("Saldo Atual: ", this.ContaPoupancas[indiceContaC].Saldo);
             Console.WriteLine("Informe a quantia a ser transferia: ");
             quantia = double.Parse(Console.ReadLine());
-            if (quantia < this.ContaPoupancas[indiceConta].Saldo)
+            if (quantia <= this.ContaPoupancas[indiceContaC].Saldo)
             {
                 Console.WriteLine("Inserindo os dados da conta corrente... ");
-                indiceConta = RetornaIndiceContaCorrente();
-                if (indiceConta >= 0)
+                indiceContaP = RetornaIndiceContaCorrente();
+                if (indiceContaP >= 0)
                 {
-                    this.ContaPoupancas[indiceConta].Saldo += quantia;
+                    if(this.ContaCorrentes[indiceContaP].Credito < 1000)
+                    {
+                        double dpcredito = 1000 - this.ContaCorrentes[indiceContaP].Credito;
+                        if(quantia > dpcredito)
+                        {
+                            this.ContaCorrentes[indiceContaP].Credito -= dpcredito;
+                            this.ContaPoupancas[indiceContaC].Saldo -= quantia;
+                            quantia -= dpcredito;
+                            this.ContaCorrentes[indiceContaP].Saldo += quantia;
+                            Console.WriteLine("Valor Transferido para o crédito: {0:F2}", dpcredito);
+                            Console.WriteLine("Valor Transferido para a conta corrente: {0:F2}", quantia);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Valor a ser transferido é menor ou igual ao valor do crédito utilizado pelo cliente");
+                            this.ContaPoupancas[indiceContaC].Saldo -= quantia;
+                            this.ContaCorrentes[indiceContaP].Credito += quantia;
+                            Console.WriteLine("Valor transferido para o crédito {0:f2}",quantia);
+
+                        }
+                        
+                    }
+                    this.ContaPoupancas[indiceContaC].Saldo -= quantia;
+                    this.ContaCorrentes[indiceContaP].Saldo += quantia;
                     Console.WriteLine("Transferência realizada com sucesso!");
                 }
             }
