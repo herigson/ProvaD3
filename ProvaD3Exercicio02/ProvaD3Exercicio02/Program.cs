@@ -84,15 +84,18 @@ struct ContaPoupança
     }
     public void Deposito()
     {
-        Console.WriteLine("Saldo atual: {0}",this.Saldo);
+        double saldo;
+        Console.WriteLine("Saldo atual: {0}", this.Saldo);
         Console.WriteLine("Informe a quantia a ser depositada na conta {0}", this.Codigo);
-        this.Saldo += double.Parse(Console.ReadLine());
-    }   
+        saldo = double.Parse(Console.ReadLine());
+        saldo *= 1.04;
+        this.Saldo += saldo;
+    }
 
     public void ImprimirSaldoContaPoupança()
     {
-        Console.WriteLine("Código: {0}",this.Codigo);
-        Console.WriteLine("Saldo: {0:F2}",this.Saldo);
+        Console.WriteLine("Código: {0}", this.Codigo);
+        Console.WriteLine("Saldo: {0:F2}", this.Saldo);
     }
 }
 
@@ -102,7 +105,7 @@ struct Agencia
     public string Endereço;
     public Cliente[] Clientes;
     public ContaCorrente[] ContaCorrentes;
-    public ContaPoupança[] ContaPoupanças;
+    public ContaPoupança[] ContaPoupancas;
     public int ClientesCadastrados;
     public int TagAtivo;
     public int ContasCorrentesCadastradas;
@@ -122,7 +125,7 @@ struct Agencia
         int opcao;
         this.Clientes = new Cliente[5];
         this.ContaCorrentes = new ContaCorrente[10];
-        this.ContaPoupanças = new ContaPoupança[10];
+        this.ContaPoupancas = new ContaPoupança[10];
         Console.WriteLine("Abertura de conta");
         if (this.ClientesCadastrados < 3)
         {
@@ -140,20 +143,21 @@ struct Agencia
             switch (opcao)
             {
                 case 1:
-                    if (this.Clientes[this.ClientesCadastrados -1].ContContaC == 0)
+                    if (this.Clientes[this.ClientesCadastrados - 1].ContContaC == 0)
                     {
                         this.ContaCorrentes[this.ContasCorrentesCadastradas].CadastroContaCorrente(this.Clientes[this.ClientesCadastrados]);
-                        this.Clientes[this.ClientesCadastrados-1].ContContaC++;
+                        this.Clientes[this.ClientesCadastrados - 1].ContContaC++;
                         this.ContasCorrentesCadastradas++;
                         Console.WriteLine("Cadastro Efetuado Com Sucesso! Aperte uma tecla para continuar...");
                         Console.ReadKey(true);
-                    }else
+                    }
+                    else
                         Console.WriteLine("Este cliente ja possuí uma conta conta corrente!");
                     break;
                 case 2:
                     if (this.Clientes[this.ClientesCadastrados - 1].ContContaP == 0)
                     {
-                        this.ContaPoupanças[this.ContasPoupançaCadastradas].CadastroContaPoupança(this.Clientes[this.ClientesCadastrados]);
+                        this.ContaPoupancas[this.ContasPoupançaCadastradas].CadastroContaPoupança(this.Clientes[this.ClientesCadastrados]);
                         this.Clientes[this.ClientesCadastrados - 1].ContContaP++;
                         this.ContasPoupançaCadastradas++;
                         Console.WriteLine("Cadastro Efetuado Com Sucesso! Aperte uma tecla para continuar...");
@@ -183,26 +187,30 @@ struct Agencia
             if (this.ContasCorrentesCadastradas > 0)
                 for (int j = 0; j < this.ContasCorrentesCadastradas; j++)
                 {
-                   
+
                 }
         }
     }
-    public int RetornaIndiceContaCorrente(ContaCorrente[] contas, string codigo)
+    public int RetornaIndiceContaCorrente()
     {
+        Console.Write("Informe o código da conta: ");
+        string codigoConta = Console.ReadLine();
         int indiceConta = -1;
-        for (int i = 0; i < contas.Length; i++)
+        for (int i = 0; i < this.ContaCorrentes.Length; i++)
         {
-            if (contas[i].Codigo == codigo)
+            if (this.ContaCorrentes[i].Codigo == codigoConta)
                 indiceConta = i;
         }
         return indiceConta;
     }
-    public int RetornaIndicePoupança(ContaPoupança[] contas, string codigo)
+    public int RetornaIndiceContaPoupanca()
     {
+        Console.Write("Informe o código da conta: ");
+        string codigoConta = Console.ReadLine();
         int indiceConta = -1;
-        for (int i = 0; i < contas.Length; i++)
+        for (int i = 0; i < this.ContaPoupancas.Length; i++)
         {
-            if (contas[i].Codigo == codigo)
+            if (this.ContaPoupancas[i].Codigo == codigoConta)
                 indiceConta = i;
         }
         return indiceConta;
@@ -221,7 +229,7 @@ struct Agencia
         double saldo = 0;
         for (int i = 0; i < this.ContasPoupançaCadastradas; i++)
         {
-            saldo += this.ContaPoupanças[i].Saldo;
+            saldo += this.ContaPoupancas[i].Saldo;
         }
         return saldo;
     }
@@ -241,14 +249,49 @@ struct Agencia
         if (indice < this.ContasCorrentesCadastradas)
         {
             ContaPoupança aux;
-            aux = this.ContaPoupanças[indice];
-            this.ContaPoupanças[indice] = this.ContaPoupanças[this.ContasPoupançaCadastradas];
-            this.ContaPoupanças[this.ContasPoupançaCadastradas] = aux;
+            aux = this.ContaPoupancas[indice];
+            this.ContaPoupancas[indice] = this.ContaPoupancas[this.ContasPoupançaCadastradas];
+            this.ContaPoupancas[this.ContasPoupançaCadastradas] = aux;
             this.ContasPoupançaCadastradas--;
         }
     }
+    public void SaqueContaPoupanca()
+    {
+        int indiceConta;
+        double quantia;
+        Console.WriteLine("Saque de conta Poupança");
+        indiceConta = RetornaIndiceContaPoupanca();
+        Console.WriteLine("Saldo Atual: ", this.ContaPoupancas[indiceConta].Saldo);
+        Console.WriteLine("Informe a quantia a ser sacada: ");
+        quantia = double.Parse(Console.ReadLine());
+        if(quantia < this.ContaPoupancas[indiceConta].Saldo)
+        {
+            this.ContaPoupancas[indiceConta].Saldo -= quantia;
+            Console.WriteLine("Saque efetuado com sucesso!");
+            Console.WriteLine("Saldo após o saque: ", this.ContaPoupancas[indiceConta].Saldo);
+        }
+        else
+            Console.WriteLine("Você não pode sacar uma quantia maior do que o seu saldo.");
+    }
 
-
+    public void SaqueContaCorrente()
+    {
+        int indiceConta;
+        double quantia;
+        Console.WriteLine("Saque de conta Corrente");
+        indiceConta = RetornaIndiceContaCorrente();
+        Console.WriteLine("Saldo Atual: ", this.ContaCorrentes[indiceConta].Saldo);
+        Console.WriteLine("Informe a quantia a ser sacada: ");
+        quantia = double.Parse(Console.ReadLine());
+        if (quantia < this.ContaCorrentes[indiceConta].Saldo)
+        {
+            this.ContaCorrentes[indiceConta].Saldo -= quantia;
+            Console.WriteLine("Saque efetuado com sucesso!");
+            Console.WriteLine("Saldo após o saque: ", this.ContaCorrentes[indiceConta].Saldo);
+        }
+        else
+            Console.WriteLine("Você não pode sacar uma quantia maior do que o seu saldo.");
+    }
 }
 
 struct Banco
@@ -268,14 +311,14 @@ struct Banco
     public void Program()
     {
         int opcao, indiceAgencia, indiceConta, opcaoConta;
-        string codigoAgencia, codigoConta;
+        double saldoConta;
 
         Console.WriteLine("Bem vindo ao programa de administração do seu banco!");
         Console.Write("Informe o nome do banco: ");
         this.Nome = Console.ReadLine();
         Console.Write("Informe o código do banco: ");
         this.Codigo = Console.ReadLine();
-        Console.Clear();
+        PauseClean();
 
         do
         {
@@ -289,10 +332,21 @@ struct Banco
             Console.WriteLine("6  - Saldo Total Em Conta Poupança No Banco");
             Console.WriteLine("7  - Abertura De Conta");
             Console.WriteLine("8  - Encerramento De Conta");
+            Console.WriteLine("9  - Impressão Dos Dados Das Contas De Cada Agência ");
+            Console.WriteLine("10 - Impressão Do Saldo Total Depositado Em Cada Agência ");
+            Console.WriteLine("11 - Impressão Do Saldo Total Depositado Em Conta Corrente em Cada Agência");
+            Console.WriteLine("12 - Impressão Do Saldo Total Depositado Em Conta Poupança em Cada Agência");
             Console.WriteLine("13 - Realizar Depósito em Contas Correntes");
             Console.WriteLine("14 - Realizar Depósito em Contas Poupança");
+            Console.WriteLine("15 - Realizar Saque Poupança");
+            Console.WriteLine("16 - Realizar Saque Corrente");
+            /*  q. Transferir dinheiro de conta corrente para conta poupança.
+                r. Transferir dinheiro de conta poupança para conta corrente.
+                s. Verificar o saldo de conta corrente.
+                t. Verificar o saldo de conta poupança.
+                u. Verificar o limite da conta corrente usado pelo cliente.*/
 
-            Console.WriteLine("0 - Encerrar o programa de administração");
+            Console.WriteLine("0  - Encerrar o programa de administração");
             Console.Write("Informe a opção desejada : ");
             opcao = int.Parse(Console.ReadLine());
 
@@ -308,107 +362,117 @@ struct Banco
                 case 2:
                     Console.Clear();
                     ImprimirDadosTodasAgencias();
-                    Console.Write("Informe o código da agência que deseja excluir?: ");
-                    codigoAgencia = Console.ReadLine();
-                    indiceAgencia = RetornaIndiceAgencia(this.Agencias, codigoAgencia);
+                    indiceAgencia = RetornaIndiceAgencia();
                     ExcluirAgencias(indiceAgencia);
                     break;
                 case 3:
                     Console.Clear();
                     //ImprimirDadosTodasAgencias();
-                    Console.Write("\n\nInforme o código da agência: ");
-                    codigoAgencia = Console.ReadLine();
-                    indiceAgencia = RetornaIndiceAgencia(this.Agencias, codigoAgencia);
+                    indiceAgencia = RetornaIndiceAgencia();
                     this.Agencias[indiceAgencia].ImprimirDadosAgencia();
-                    Console.WriteLine("Aperte uma tecla para continuar...");
-                    Console.ReadKey(true);
+                    PauseClean();
                     break;
                 case 4:
                     Console.Clear();
                     double saldoTotalBanco = SaldoTotalContaCorrenteBanco() + SaldoTotalContaPoupançaBanco();
                     Console.WriteLine("Saldo Total Depositado No Banco: {0:F2}", saldoTotalBanco);
-                    Console.WriteLine("Aperte uma tecla para continuar...");
-                    Console.ReadKey(true);
+                    PauseClean();
                     break;
                 case 5:
                     Console.Clear();
                     double saltoTotalCcBanco = SaldoTotalContaCorrenteBanco();
                     Console.WriteLine("Saldo Total Depositado No Banco: {0:F2}", saltoTotalCcBanco);
-                    Console.WriteLine("Aperte uma tecla para continuar...");
-                    Console.ReadKey(true);
+                    PauseClean();
                     break;
                 case 6:
                     Console.Clear();
                     double saltoTotalCpBanco = SaldoTotalContaPoupançaBanco();
                     Console.WriteLine("Saldo Total Depositado No Banco: {0:F2}", saltoTotalCpBanco);
-                    Console.WriteLine("Aperte uma tecla para continuar...");
-                    Console.ReadKey(true);
+                    PauseClean();
                     break;
                 case 7:
                     Console.Clear();
                     ImprimirDadosTodasAgencias();
-                    Console.Write("\n\nInforme o código da agência: ");
-                    codigoAgencia = Console.ReadLine();
-                    indiceAgencia = RetornaIndiceAgencia(this.Agencias, codigoAgencia);
+                    indiceAgencia = RetornaIndiceAgencia();
                     this.Agencias[indiceAgencia].CadastrarConta();
                     break;
                 case 8:
                     Console.Clear();
                     Console.WriteLine("1 - Encerrar conta corrente\n2 - Encerrar conta poupança\n0 - Sair");
                     opcaoConta = int.Parse(Console.ReadLine());
-                    switch (opcaoConta) 
+                    switch (opcaoConta)
                     {
                         case 0:
                             break;
                         case 1:
                             Console.Clear();
                             ImprimirDadosTodasAgencias();
-                            Console.Write("\n\nInforme o código da agência: ");
-                            codigoAgencia = Console.ReadLine();
-                            indiceAgencia = RetornaIndiceAgencia(this.Agencias, codigoAgencia);
-                            Console.Write("Informe o código da conta: ");
-                            codigoConta = Console.ReadLine();
-                            indiceConta = this.Agencias[indiceAgencia].RetornaIndiceContaCorrente(this.Agencias[indiceAgencia].ContaCorrentes, codigoConta);
+                            indiceAgencia = RetornaIndiceAgencia();
+                            indiceConta = this.Agencias[indiceAgencia].RetornaIndiceContaCorrente();
                             this.Agencias[indiceAgencia].ExcluirContaCorrente(indiceConta);
                             break;
                         case 2:
                             Console.Clear();
                             ImprimirDadosTodasAgencias();
-                            Console.Write("\n\nInforme o código da agência: ");
-                            codigoAgencia = Console.ReadLine();
-                            indiceAgencia = RetornaIndiceAgencia(this.Agencias, codigoAgencia);
-                            Console.Write("Informe o código da conta: ");
-                            codigoConta = Console.ReadLine();
-                            indiceConta = this.Agencias[indiceAgencia].RetornaIndicePoupança(this.Agencias[indiceAgencia].ContaPoupanças, codigoConta);
+                            indiceAgencia = RetornaIndiceAgencia();
+                            indiceConta = this.Agencias[indiceAgencia].RetornaIndiceContaPoupanca();
                             this.Agencias[indiceAgencia].ExcluirContaPoupança(indiceConta);
                             break;
                     }
-                    
+                    break;
+                case 9:
+                    Console.Clear();
+                    ImprimirDadosTodasAgencias();
+                    indiceAgencia = RetornaIndiceAgencia();
+                    this.Agencias[indiceAgencia].ImprimirTodasAsContasAgencia();
+                    break;
+                case 10:
+                    Console.Clear();
+                    ImprimirDadosTodasAgencias();
+                    indiceAgencia = RetornaIndiceAgencia();
+                    saldoConta = this.Agencias[indiceAgencia].SaldoTotalContaCorrenteAgencia() + this.Agencias[indiceAgencia].SaldoTotalContaPoupançaAgencia(); ;
+                    Console.WriteLine("Saldo total depositado na agencia {0} : {1:F2}", this.Agencias[indiceAgencia].Codigo, saldoConta);
+                    break;
+                case 11:
+                    Console.Clear();
+                    ImprimirDadosTodasAgencias();
+                    indiceAgencia = RetornaIndiceAgencia();
+                    saldoConta = this.Agencias[indiceAgencia].SaldoTotalContaCorrenteAgencia();
+                    Console.WriteLine("Saldo total em conta corrente na agencia {0} : {1:F2}",this.Agencias[indiceAgencia].Codigo, saldoConta);
+                    break;
+                case 12:
+                    Console.Clear();
+                    ImprimirDadosTodasAgencias();
+                    indiceAgencia = RetornaIndiceAgencia();
+                    saldoConta = this.Agencias[indiceAgencia].SaldoTotalContaPoupançaAgencia();
+                    Console.WriteLine("Saldo Total em Conta Poupança na agencia {0} : {1:F2}", this.Agencias[indiceAgencia].Codigo, saldoConta);
                     break;
                 case 13:
                     Console.Clear();
                     ImprimirDadosTodasAgencias();
-                    Console.Write("\n\nInforme o código da agência: ");
-                    codigoAgencia = Console.ReadLine();
-                    indiceAgencia = RetornaIndiceAgencia(this.Agencias, codigoAgencia);
-                    Console.Write("Informe o código da conta: ");
-                    codigoConta = Console.ReadLine();
-                    indiceConta = this.Agencias[indiceAgencia].RetornaIndiceContaCorrente(this.Agencias[indiceAgencia].ContaCorrentes, codigoConta);
+                    indiceAgencia = RetornaIndiceAgencia();
+                    indiceConta = this.Agencias[indiceAgencia].RetornaIndiceContaCorrente();
                     this.Agencias[indiceAgencia].ContaCorrentes[indiceConta].Deposito();
                     break;
                 case 14:
                     Console.Clear();
                     ImprimirDadosTodasAgencias();
-                    Console.Write("\n\nInforme o código da agência: ");
-                    codigoAgencia = Console.ReadLine();
-                    indiceAgencia = RetornaIndiceAgencia(this.Agencias, codigoAgencia);
-                    Console.Write("Informe o código da conta: ");
-                    codigoConta = Console.ReadLine();
-                    indiceConta = this.Agencias[indiceAgencia].RetornaIndicePoupança(this.Agencias[indiceAgencia].ContaPoupanças, codigoConta);
-                    this.Agencias[indiceAgencia].ContaPoupanças[indiceConta].Deposito();
+                    indiceAgencia = RetornaIndiceAgencia();
+                    indiceConta = this.Agencias[indiceAgencia].RetornaIndiceContaPoupanca();
+                    this.Agencias[indiceAgencia].ContaPoupancas[indiceConta].Deposito();
                     break;
-                
-
+                case 15:
+                    Console.Clear();
+                    ImprimirDadosTodasAgencias();
+                    indiceAgencia = RetornaIndiceAgencia();
+                    this.Agencias[indiceAgencia].SaqueContaPoupanca();
+                    break;
+                case 16:
+                    Console.Clear();
+                    ImprimirDadosTodasAgencias();
+                    indiceAgencia = RetornaIndiceAgencia();
+                    this.Agencias[indiceAgencia].SaqueContaCorrente();
+                    break;
             }
         } while (opcao != 0);
 
@@ -460,21 +524,10 @@ struct Banco
             Console.WriteLine();
         }
     }
-    public int RetornaIndiceAgencia(Agencia[] agencias, string codigo)
-    {
-        int indiceAgencia = -1;
-        for (int i = 0; i < agencias.Length; i++)
-        {
-            if (agencias[i].Codigo == codigo)
-                indiceAgencia = i;
-        }
-
-        return indiceAgencia;
-    }
     public double SaldoTotalContaCorrenteBanco()
     {
         double saldo = 0;
-        for(int i = 0; i < this.Agencias.Length; i++)
+        for (int i = 0; i < this.Agencias.Length; i++)
         {
             saldo += this.Agencias[i].SaldoTotalContaCorrenteAgencia();
         }
@@ -489,6 +542,26 @@ struct Banco
         }
         return saldo;
     }
+    public void PauseClean()
+    {
+        Console.WriteLine("Aperte uma tecla para continuar...");
+        Console.ReadKey(true);
+        Console.Clear();
+    }
+     public int RetornaIndiceAgencia()
+     {
+         int indiceAgencia = -1;
+         
+         Console.Write("\n\nInforme o código da agência: ");
+         string codigoAgencia = Console.ReadLine();
+         
+         for (int i = 0; i < this.Agencias.Length; i++)
+         {
+             if (this.Agencias[i].Codigo == codigoAgencia)
+                 indiceAgencia = i;
+         }
+         return indiceAgencia;   
+     }
 }
 
 
