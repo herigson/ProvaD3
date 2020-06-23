@@ -462,7 +462,8 @@ struct Banco
                     Console.Clear();
                     ImprimirDadosTodasAgencias();
                     indiceAgencia = RetornaIndiceAgencia();
-                    this.Agencias[indiceAgencia].CadastrarConta();
+                    if(indiceAgencia >= 0)
+                        this.Agencias[indiceAgencia].CadastrarConta();
                     break;
                 case 8:
                     Console.Clear();
@@ -633,6 +634,7 @@ struct Banco
         else
         {
             Console.WriteLine("Agencia não existente.");
+            PauseClean();
         }
     }
     public void ImprimirDadosTodasAgencias()
@@ -674,6 +676,9 @@ struct Banco
             if (this.Agencias[i].Codigo == codigoAgencia)
                 indiceAgencia = i;
         }
+        if(indiceAgencia == -1)
+            Console.WriteLine("Agencia não cadastrada!");
+        Banco.PauseClean();
         return indiceAgencia;
     }
     public static void PauseClean()
