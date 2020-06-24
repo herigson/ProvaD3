@@ -65,6 +65,12 @@ struct ContaCorrente
         Console.WriteLine("Código: {0}", this.Codigo);
         Console.WriteLine("Saldo: {0:F2}", this.Saldo);
     }
+    public void ImprimirDadosContaCorrente()
+    {
+        Console.WriteLine("Código: {0}", this.Codigo);
+        Console.WriteLine("Saldo: {0:F2}", this.Saldo);
+        Console.WriteLine("Cliente: {0}", this.Cliente.NomeCompleto);
+    }
 
 }
 struct ContaPoupança
@@ -97,6 +103,12 @@ struct ContaPoupança
     {
         Console.WriteLine("Código: {0}", this.Codigo);
         Console.WriteLine("Saldo: {0:F2}", this.Saldo);
+    }
+    public void ImprimirDadosContaPoupanca()
+    {
+        Console.WriteLine("Código: {0}", this.Codigo);
+        Console.WriteLine("Saldo: {0:F2}", this.Saldo);
+        Console.WriteLine("Cliente: {0}", this.Cliente.NomeCompleto);
     }
 }
 
@@ -184,14 +196,28 @@ struct Agencia
     public void ImprimirTodasAsContasAgencia()
     {
 
-        for (int i = 0; i < this.Clientes.Length; i++)
-        {
-            if (this.ContasCorrentesCadastradas > 0)
-                for (int j = 0; j < this.ContasCorrentesCadastradas; j++)
-                {
 
-                }
+        if (this.ContasCorrentesCadastradas > 0)
+        {
+            Console.WriteLine("Contas Correntes");
+            for (int j = 0; j < this.ContasCorrentesCadastradas; j++)
+            {
+                this.ContaCorrentes[j].ImprimirDadosContaCorrente();
+            }
         }
+        else
+            Console.WriteLine("Sem contas correntes cadastradas nesta agência.");
+        if (this.ContasPoupancaCadastradas > 0)
+        {
+            Console.WriteLine("Contas Poupanças");
+            for (int j = 0; j < this.ContasPoupancaCadastradas; j++)
+            {
+                this.ContaPoupancas[j].ImprimirDadosContaPoupanca();
+            }
+        }
+        else
+            Console.WriteLine("Sem contas poupanças cadastradas nesta agência.");
+
     }
     public int RetornaIndiceContaCorrente()
     {
