@@ -136,9 +136,12 @@ struct Agencia
     public void CadastrarConta()
     {
         int opcao;
-        this.Clientes = new Cliente[5];
-        this.ContaCorrentes = new ContaCorrente[10];
-        this.ContaPoupancas = new ContaPoupança[10];
+        if (this.ClientesCadastrados <= 0)
+        {
+            this.Clientes = new Cliente[5];
+            this.ContaCorrentes = new ContaCorrente[10];
+            this.ContaPoupancas = new ContaPoupança[10];
+        }
         Console.WriteLine("Abertura de conta");
         if (this.ClientesCadastrados < 3)
         {
@@ -334,7 +337,7 @@ struct Agencia
             {
                 this.ContaCorrentes[indiceConta].Saldo -= quantia;
                 Console.WriteLine("Saque efetuado com sucesso!");
-                Console.WriteLine("Saldo após o saque: ", this.ContaCorrentes[indiceConta].Saldo);
+                Console.WriteLine("Saldo após o saque: {0}", this.ContaCorrentes[indiceConta].Saldo);
             }
             else if (quantia < (this.ContaCorrentes[indiceConta].Saldo + this.ContaCorrentes[indiceConta].Credito))
             {
